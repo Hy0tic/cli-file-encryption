@@ -1,0 +1,52 @@
+name: Go CLI Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code from your repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Go on the runner
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22.2' # Specify the Go version (adjust as needed)
+
+      # Step 3: Cache Go modules to improve build time
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            /go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      # Step 4: Install dependencies (Go modules)
+      - name: Install dependencies
+        run: go mod tidy
+
+      # Step 5: Build the CLI tool
+      - name: Build the CLI tool
+        run: go build -o file-encryption
+
+      # Step 6: Run tests (if you have any)
+      - name: Run tests
+        run: go test ./...
+
+      # Step 7: Verify the tool works (optional)
+      # This step runs the CLI tool to verify the build output
+      - name: Run CLI tool help
+        run: ./file-encryption --help
