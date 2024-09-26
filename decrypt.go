@@ -5,7 +5,7 @@ import (
 	"crypto/cipher"
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -19,7 +19,7 @@ func decryptFile(inputFile, outputFile, keyString string) error {
 	}
 
 	// Read the encrypted file content
-	ciphertext, err := ioutil.ReadFile(inputFile)
+	ciphertext, err := os.ReadFile(inputFile)
 	if err != nil {
 		return fmt.Errorf("failed to read input file: %v", err)
 	}
@@ -50,7 +50,7 @@ func decryptFile(inputFile, outputFile, keyString string) error {
 	}
 
 	// Write the decrypted data to the output file
-	if err := ioutil.WriteFile(outputFile, plaintext, 0644); err != nil {
+	if err := os.WriteFile(outputFile, plaintext, 0644); err != nil {
 		return fmt.Errorf("failed to write output file: %v", err)
 	}
 

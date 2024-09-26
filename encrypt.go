@@ -7,7 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -21,7 +21,8 @@ func encryptFile(inputFile, outputFile, keyString string) error {
 	}
 
 	// Read the file content
-	plaintext, err := ioutil.ReadFile(inputFile)
+	plaintext, err := os.ReadFile(inputFile)
+
 	if err != nil {
 		return fmt.Errorf("failed to read input file: %v", err)
 	}
@@ -48,7 +49,7 @@ func encryptFile(inputFile, outputFile, keyString string) error {
 	ciphertext := gcm.Seal(nonce, nonce, plaintext, nil)
 
 	// Write the encrypted data to the output file
-	if err := ioutil.WriteFile(outputFile, ciphertext, 0644); err != nil {
+	if err := os.WriteFile(outputFile, ciphertext, 0644); err != nil {
 		return fmt.Errorf("failed to write output file: %v", err)
 	}
 
